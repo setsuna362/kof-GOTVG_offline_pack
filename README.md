@@ -1,37 +1,49 @@
-# KOF GOTVG 離線包 v4.4
+# KOF GOTVG 離線包 v5
 
 24 套游聚(GOTVG)KOF 改版,**全部經 FBNeo 實測可執行**。
 
 **24 套全部可組裝**,已逐檔 CRC 驗證,無來源 CRC 為零。
 
-## 先取得 `parts/`
+## 先取得 `deltas/`
 
-改版獨有的二進位分片(101 個區塊)**不在 repo 內**,依世代拆成數個包放在
+改版獨有的內容**不在 repo 內**,以「**對原版 ROM 的 bsdiff 差分**」形式依
+世代分包,放在
 [Releases](https://github.com/setsuna362/kof-GOTVG_offline_pack/releases)。
-只下載你要組的那幾代即可,解壓到本目錄後會併進同一個 `parts/`:
+只下載你要組的那幾代即可,解壓到本目錄後會併進同一個 `deltas/`:
 
-| 下載 | 檔數 | 大小 | 涵蓋套件 |
+| 下載 | 差分數 | 大小 | 涵蓋套件 |
 |---|---|---|---|
-| `parts-kof95.zip` | 2 | 0.7MB | kof95sp |
-| `parts-kof96.zip` | 16 | 22.6MB | kof96ae, kof96c, kof96rss |
-| `parts-kof97.zip` | 13 | 19.9MB | kof971v1, kof97jhph, kof97orh, kof97s |
-| `parts-kof98.zip` | 36 | 63.7MB | kof98c2025, kof98h, kof98king, kof98pls, kof98plsc, kof98s |
-| `parts-kof99.zip` | 2 | 0.3MB | kof99t |
-| `parts-kof2000.zip` | 17 | 30.4MB | kof2000s, kof2000sp, kof2000t |
-| `parts-kof2001.zip` | 6 | 9.1MB | kof2001s |
-| `parts-kof2002.zip` | 9 | 24.1MB | kf2k2pp, kof2002kai, kof2002prsp |
-| `parts-kof2003.zip` | 3 | 1.7MB | kof2003t |
-| | **104** | **173MB** | |
+| **不需要** | 0 | — | kof94ru |
+| `deltas-kof95.zip` | 2 | 20KB | kof95sp |
+| `deltas-kof96.zip` | 16 | 16.5MB | kof96ae, kof96c, kof96rss |
+| `deltas-kof97.zip` | 13 | 2.1MB | kof971v1, kof97jhph, kof97orh, kof97s |
+| `deltas-kof98.zip` | 36 | 10.4MB | kof98c2025, kof98h, kof98king, kof98pls, kof98plsc, kof98s |
+| `deltas-kof99.zip` | 2 | 639B | kof99t |
+| `deltas-kof2000.zip` | 17 | 18.1MB | kof2000s, kof2000sp, kof2000t |
+| `deltas-kof2001.zip` | 5 | 50KB | kof2001s |
+| `deltas-kof2002.zip` | 7 | 10KB | kf2k2pp, kof2002kai, kof2002prsp |
+| `deltas-kof2003.zip` | 3 | 1.3MB | kof2003t |
+| | **101** | **48.5MB** | 共 24 套 |
 
 ```bash
-unzip -o parts-kof98.zip     # 解出 parts/<crc>.bin,重複執行不會互相覆蓋錯
+unzip -o deltas-kof98.zip    # 解出 deltas/<crc>.bsdiff,重複執行不會互相覆蓋錯
 ```
 
-> **KOF94 沒有分包。** `kof94ru` 的獨有內容是 **0 bytes** —— 它是
-> kof94nr2 的 p1 + kof94rz 的 s1 + 原版 kof94 的 C/M/V 這個**組合**,
-> 每個位元組都已登錄於 FBNeo,不需要任何分片。
+> **差分本身不含任何可獨立使用的遊戲資料。** 每個 `.bsdiff` 都是「改版相對
+> 於某顆原版 ROM 的差異」,沒有那顆原版就還原不出任何東西。基準以 **CRC**
+> 記錄在 `deltas.json`(隨 repo 提供),組建時由 builder 在你的原版池裡依
+> **內容**反查 —— 所以你的原版 zip 叫什麼、是 SPLIT 還是 MERGED 都無所謂。
+>
+> 還原後 builder 會**重驗 CRC 與長度**,差分檔或基準有任何問題都會當場擋下。
+> 還原用的 bspatch 是純 Python 實作(只用標準庫的 `bz2`),**不需要安裝
+> `bsdiff4` 或任何套件**。
 
-各世代之間**零共用分片**,所以下載哪幾包就只能組哪幾代,不會有跨包相依。
+> **KOF94 不需要下載任何東西。** `kof94ru` 的獨有內容是 **0 bytes** —— 它是
+> kof94nr2 的 p1 + kof94rz 的 s1 + 原版 kof94 的 C/M/V 這個**組合**,每個
+> 位元組都已登錄於 FBNeo。備妥那三個原版後,
+> `python3 build_kof-GOTVG_offline_pack.py 94` 就會產出 `kof94ru.zip`。
+
+各世代之間**零共用差分**,所以下載哪幾包就只能組哪幾代,不會有跨包相依。
 
 ## 使用方式
 
@@ -165,8 +177,9 @@ python3 build_kof-GOTVG_offline_pack.py --check    只檢查,不寫檔
 > 子目錄就完全沒這個問題。另外 `out/kof98h.zip` 的載入名稱也是 `kof98h`,
 > 別和原版放在同一處。
 
-原理:與原版相同的區塊直接從原版取,只有改版特有的內容才收在 `parts/`(101 個區塊)。
-槽位要求但實際無資料的填充區(kof98c2025 的 `sp2b` / `p3`)由 builder 直接生成,不佔 `parts/`。
+原理:與原版相同的區塊直接從原版取,只有改版特有的內容才以差分形式收在
+`deltas/`(101 個差分,還原後共 457.5MB,差分本身 48.5MB)。
+槽位要求但實際無資料的填充區(kof98c2025 的 `sp2b` / `p3`)由 builder 直接生成,不佔任何空間。
 
 > **kof2002 的 p2 要挑對。** `265-p2d.sp2` 需要 CRC `0a189c94`(FBNeo 名
 > `265-p2t.sp2`,見於 `kof2002t` / `kof2k2jq` / `kof2k2ly`)。一般的
@@ -576,6 +589,61 @@ sprite 空間**,不受單顆 ROM 邊界限制。只要 c1/c2 的內容改了,加
 
 **所以對 CMC42 / CMC50 加密的套件,必須先解密才能判斷有沒有獨有內容。**
 若照加密態的 CRC 收錄,kof2002kai 會多佔 `parts/` 64MB —— 實際只需 5MB。
+
+---
+
+## v5:分片改以對原版的 bsdiff 差分分發
+
+原本 `parts/` 收的是改版獨有的**原始二進位區塊**(101 個檔 / 457.5MB)——
+那些是可以獨立存在的 ROM 資料。v5 改成只收「改版相對於原版 ROM 的差異」,
+沒有原版就還原不出任何東西。
+
+**體積:457.5MB -> 48.5MB,省 89.4%。** 分世代打包後最大的是
+`deltas-kof2000.zip` 18.1MB,最小的 `deltas-kof99.zip` 只有 639 bytes。
+
+| 世代 | 差分數 | 還原後 | 差分後 | 省 |
+|---|---:|---:|---:|---:|
+| KOF95 | 2 | 2.1MB | 0.02MB | 99.1% |
+| KOF96 | 16 | 61.5MB | 16.52MB | 73.1% |
+| KOF97 | 13 | 60.1MB | 2.09MB | 96.5% |
+| KOF98 | 36 | 189.8MB | 10.42MB | 94.5% |
+| KOF99 | 2 | 1.1MB | 0.00MB | 100.0% |
+| KOF2000 | 17 | 91.5MB | 18.12MB | 80.2% |
+| KOF2001 | 5 | 17.4MB | 0.05MB | 99.7% |
+| KOF2002 | 7 | 27.0MB | 0.01MB | 100.0% |
+| KOF2003 | 3 | 7.0MB | 1.27MB | 81.9% |
+| **合計** | **101** | **457.5MB** | **48.50MB** | **89.4%** |
+
+差距的原因明確:KOF99 / 2001 / 2002 的基準是直系的解密版原版(`kof99fd`、
+`kof2k1fd`、`kof2002t`),幾乎逐位元組相同;KOF97 / 98 的原版是明文,改版
+只改少數位元組;KOF96 與 KOF2000 差得多,是因為基準為 **CMC 加密態**而分片
+是解密態,位址被打散,只能靠位元組值的統計結構壓。
+
+> **KOF2003 的 81.9% 還有改善空間。** 它那三個分片其實是原版那顆 8MB
+> `271-p1d.p1` 的切片,拿它當基準可以趨近 100%;目前只有 `p3` 用到正確基準,
+> `p1` / `p2` 還停在較差的選擇。基準搜尋的補強掃描只跑完 40 個候選中的 12
+> 個就先發布了,之後會補。
+
+**基準以 CRC 記錄,不記檔名或 romset 名。** 還原時由 builder 在 POOL 裡依
+內容反查,和專案其餘部分一致 —— `kof2k3fd` 與 `kof2003t` 這種等價來源自然
+就通用。基準不限同槽位:`kof98c2025` 的 `c9`~`c12` 原版沒有對應槽位,拿
+kof98 的 `c3`~`c6` 當基準仍有 56~93%;`kof2003t` 的 p1/p2/p3 其實是原版
+那顆 8MB `271-p1d.p1` 的切片,差分趨近於零。
+
+**還原不新增相依套件。** BSDIFF40 格式只是 magic 加三個 bzip2 區塊,所以
+builder 內建純 Python 的 bspatch,只用標準庫。效能關鍵是 64KB 分塊:
+bsdiff 的 add 段要逐位元組相加,但改版通常只改少數位元組、整段幾乎全是 0,
+以 64KB 為單位檢查、全零區塊直接整段複製 —— 8MB 的 C ROM 因此從數十秒降到
+0.2~1.7 秒。
+
+**順帶修掉一個收錄缺陷。** 產生差分時發現有三個分片的最佳基準 CRC 與自己
+相同,也就是那些「改版獨有區塊」其實與原版逐位元組相同:`265-v1.v1`、
+`265-v2.v2`(= kof2002t 的 v1d/v2d)、`242-p2.sp2`(= kof2k1fd 的 pg2)。
+當初建 manifest 時手邊沒有 kof2002t / kof2k1fd,所以看起來像獨有內容。
+已登錄進 `sources`,分片數 104 -> 101、還原後體積 477.5 -> 457.5MB。
+
+**驗證:** 把 `parts/` 完全移開、只靠 `deltas/` 與 `originals/` 組建,
+24 套 / 361 個檔的 CRC **全部正確,零錯誤**。
 
 ---
 

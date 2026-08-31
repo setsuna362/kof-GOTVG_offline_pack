@@ -44,7 +44,11 @@ for g in GEN:
     tag = g.lower()
     zp = os.path.join(out, f"deltas-{tag}.zip")
     if NOTES_ONLY:
-        size = sum(os.path.getsize(os.path.join(H, "deltas", c + ".bsdiff")) for c in cs)
+        # 表格會被貼進 README 與 Release 說明,所以以實際 zip 為準;還沒
+        # 打包過就退而用差分檔總和,並標明那是未壓縮的估計值。
+        size = (os.path.getsize(zp) if os.path.exists(zp) else
+                sum(os.path.getsize(os.path.join(H, "deltas", c + ".bsdiff"))
+                    for c in cs))
     else:
         # 只放 .bsdiff。deltas.json 隨 repo 一起提供(完整 101 筆)——
         # 若每個世代包各夾一份,解壓多個包會互相覆蓋,只剩最後一個的條目。
@@ -58,13 +62,20 @@ for g in GEN:
     rows.append((f"deltas-{tag}.zip", g, len(cs), size, sets_txt))
     tot_n += len(cs); tot_b += size
 
+def _sz(b):
+    """小於 1MB 用 KB,否則用 MB —— 免得幾百 KB 的包顯示成 0.0MB。"""
+    if b < 1024:
+        return f"{b}B"
+    return f"{b/1024:.0f}KB" if b < 1048576 else f"{b/1048576:.1f}MB"
+
+
 print(f"\n| 下載 | 差分數 | 大小 | 涵蓋套件 |")
 print("|---|---|---|---|")
 for fn, g, n, b, sets_txt in rows:
     if fn is None:
         print(f"| **不需要** | 0 | — | {sets_txt} |")
     else:
-        print(f"| `{fn}` | {n} | {b/1048576:.1f}MB | {sets_txt} |")
-print(f"| | **{tot_n}** | **{tot_b/1048576:.1f}MB** | 共 {len(SETS)} 套 |")
+        print(f"| `{fn}` | {n} | {_sz(b)} | {sets_txt} |")
+print(f"| | **{tot_n}** | **{_sz(tot_b)}** | 共 {len(SETS)} 套 |")
 if not NOTES_ONLY:
     print(f"\n寫出到 release/")
