@@ -1,4 +1,6 @@
 // 素材全為解密版,故用 NeoInit;s1 由 C 產生故需 ALTERNATE_TEXT
+// V 拆成 4 顆 4MB —— PROGBK1 的 V 槽位放不下 8MB。資料排列不變(V ROM 是
+// 連續的 ADPCM 位址空間),由 builder 從原版那兩顆 8MB 直接切出。
 static struct BurnRomInfo kof2003tgRomDesc[] = {
 	{ "271-p1t.p1",		0x100000, 0xcadb0a2f, 1 | BRF_ESS | BRF_PRG },
 	{ "271-p2d.p2",		0x400000, 0x92ed6ee3, 1 | BRF_ESS | BRF_PRG },
@@ -17,8 +19,10 @@ static struct BurnRomInfo kof2003tgRomDesc[] = {
 
 	{ "271-m1d.m1",		0x080000, 0xcc8b54c0, 4 | BRF_ESS | BRF_PRG },
 
-	{ "271-v1d.v1",		0x800000, 0xdd6c6a85, 5 | BRF_SND },
-	{ "271-v2d.v2",		0x800000, 0x0e84f8c1, 5 | BRF_SND },
+	{ "271-v1d.v1",		0x400000, 0xdba0b938, 5 | BRF_SND },
+	{ "271-v2d.v2",		0x400000, 0x71956ee2, 5 | BRF_SND },
+	{ "271-v3d.v3",		0x400000, 0xddbbb199, 5 | BRF_SND },
+	{ "271-v4d.v4",		0x400000, 0x01b90c4f, 5 | BRF_SND },
 };
 
 STDROMPICKEXT(kof2003tg, kof2003tg, neogeo)

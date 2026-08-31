@@ -35,7 +35,7 @@ ap.add_argument("--checklist", action="store_true",
 a = ap.parse_args()
 
 MAN = json.load(open(os.path.join(H, "manifest.json"), encoding="utf-8"))
-if MAN.get("version") != 5:
+if MAN.get("version") != 6:
     sys.exit("manifest 版本不符,請用隨附的 manifest.json")
 SETS, SOURCES = MAN["sets"], MAN["sources"]
 
@@ -45,7 +45,26 @@ for name, e in SETS.items():
     for fn, c in e["files"].items():
         if c in SOURCES:
             gen_need[e["gen"]].add(c)
+        elif c in MAN.get("split", {}):          # 切分:需要來源那顆大 ROM
+            gen_need[e["gen"]].add(MAN["split"][c]["from"])
+        elif "_dj" in dir() and os.path.isfile(_dj):
+            _d2 = json.load(open(_dj, encoding="utf-8"))["deltas"]
+            if c in _d2:
+                gen_need[e["gen"]].add(_d2[c]["base"])
 NEED = set(SOURCES)
+
+# 差分的基準也必須湊到 —— 它們未必列在 sources(sources 只列 builder 直接
+# 取用的檔),但少了就還原不出分片。不納入的話,最小覆蓋可能挑到「對
+# sources 等價、卻不含某個基準」的替代 romset(例如用 kof2003t.zip 代替
+# kof2k3fd.zip,前者就沒有 271-p1d.p1)。
+_dj = os.path.join(H, "deltas.json")
+if os.path.isfile(_dj):
+    _bases = {e["base"] for e in
+              json.load(open(_dj, encoding="utf-8"))["deltas"].values()}
+    NEED |= _bases
+# split 的來源同理
+for _c, _e in MAN.get("split", {}).items():
+    NEED.add(_e["from"])
 
 # 唯一的真實來源:隨包附的 FBNeo 官方 DAT。刻意不提供改用他份 DAT 的選項,
 # 避免不同來源的清單造成分歧 —— 要更新就直接換掉這個檔。
@@ -239,7 +258,9 @@ for g in GEN_ORDER:
 if missing:
     bysrc = defaultdict(list)
     for c in missing:
-        bysrc[SOURCES[c]].append(c)
+        # 差分基準與 split 來源不在 sources 裡(sources 只列 builder 直接
+        # 取用的檔),歸到「差分/切分基準」一類報告。
+        bysrc[SOURCES.get(c, "(差分/切分基準)")].append(c)
     print("\n缺料 —— 還少這些檔(依內容判定,檔名不拘):")
     for r, cs in sorted(bysrc.items(), key=lambda x: -len(x[1])):
         print(f"  manifest 標 {r + '.zip':14} 缺 {len(cs):>3} 個:"
@@ -260,7 +281,7 @@ if missing:
             print("\n  同樣內容也存在於這些 set —— 取得任何一個都算數:")
             left = set(missing)
             while left:
-                canon = {SOURCES[c] for c in left}
+                canon = {SOURCES[c] for c in left if c in SOURCES}
                 g, cs = max(cover.items(),
                             key=lambda kv: (len(kv[1] & left),
                                             kv[0] in canon,      # 平手時取正規來源

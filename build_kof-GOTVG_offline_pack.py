@@ -30,10 +30,16 @@ def crc(b):
 
 
 MAN = json.load(open(os.path.join(H, "manifest.json"), encoding="utf-8"))
-if MAN.get("version") != 5:
+if MAN.get("version") != 6:
     sys.exit("manifest 版本不符,請用隨附的 manifest.json")
 SETS, SOURCES = MAN["sets"], MAN["sources"]
 ZEROFILL = MAN.get("zerofill", {})   # crc -> 長度。純填充,不佔 parts/
+
+# v6:split —— 某些套件的槽位要求把原版的一顆大 ROM 切成數顆小的(例如
+# PROGBK1 的 V 槽位只吃 4MB,而原版 kof2002t 的 V 是 8MB 一顆)。V ROM 是
+# 連續的 ADPCM 位址空間,切幾顆不影響資料排列,所以直接從池裡的來源檔切,
+# 不必另外收錄或多要求一個 romset。crc -> {from, offset, length}
+SPLIT = MAN.get("split", {})
 
 # deltas.json 有的話就啟用差分模式:分片改以「對原版 ROM 的 bsdiff 差分」
 # 分發,基準以 CRC 記錄,由 POOL 依內容反查。沒有 deltas.json 就完全照舊。
@@ -86,6 +92,12 @@ def bspatch(old, delta):
         npos += y; ei += y
         op += z
     return bytes(new)
+
+
+def split_ready(c):
+    """這個 CRC 能不能從池裡的某個檔切出來。"""
+    e = SPLIT.get(c)
+    return bool(e) and e["from"] in POOL
 
 
 def delta_ready(c):
@@ -166,7 +178,7 @@ for gen in GEN_ORDER:
         for c in SETS[name]["files"].values():
             if (c not in POOL and c not in ZEROFILL
                     and not os.path.isfile(os.path.join(H, "parts", c + ".bin"))
-                    and not delta_ready(c)):
+                    and not delta_ready(c) and not split_ready(c)):
                 gap.add(c)
     lack = sorted({SOURCES[c] for c in gap if c in SOURCES})
 
@@ -200,6 +212,16 @@ for gen in GEN_ORDER:
                     missing.append(f"deltas/{c}.bsdiff 還原後不符")
             elif c in ZEROFILL:
                 data[fn] = bytes(ZEROFILL[c])      # 槽位要求但實際無資料的填充區
+            elif split_ready(c):
+                e2 = SPLIT[c]
+                zn, inner = POOL[e2["from"]]
+                if zn not in _ZCACHE:
+                    _ZCACHE[zn] = zipfile.ZipFile(os.path.join(SRCDIR, zn))
+                b = _ZCACHE[zn].read(inner)[e2["offset"]:e2["offset"] + e2["length"]]
+                if crc(b) == c:
+                    data[fn] = b
+                else:
+                    missing.append(f"{c} 由 {e2['from']} 切出後 CRC 不符")
             elif c in POOL:
                 zn, inner = POOL[c]
                 if zn not in _ZCACHE:
@@ -224,4 +246,11 @@ for gen in GEN_ORDER:
 print(f"\n{'可組裝' if CHECK_ONLY else '完成'} {ok} 套,略過 {skip} 套。")
 print("需 neogeo.zip(BIOS)。把某套改名為上表的『載入名稱』後載入該遊戲。")
 print("FBNeo 請放到 <system>/fbneo/patched/ 內。")
-print("kof96ae / kof2003t 需自建驅動,定義見 drivers/ 目錄。")
+# 哪些套件掛在 FBNeo 沒有的槽位 —— 由 drivers/ 底下有沒有同名 .c 判定,
+# 免得每次增修套件都要回來改這行字。
+_cust = sorted({e["host"] for e in SETS.values()
+                if os.path.isfile(os.path.join(H, "drivers", e["host"] + ".c"))})
+if _cust:
+    for _h in _cust:
+        _who = sorted(n for n, e in SETS.items() if e["host"] == _h)
+        print(f"{', '.join(_who)} 需自建驅動 {_h} —— 見 drivers/{_h}.c")
