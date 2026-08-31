@@ -1,8 +1,11 @@
-# KOF GOTVG 離線包 v5
+# KOF GOTVG 離線包 v5.1
 
-24 套游聚(GOTVG)KOF 改版,**全部經 FBNeo 實測可執行**。
+26 套游聚(GOTVG)KOF 改版,**全部經 FBNeo 實測可執行**。
 
-**24 套全部可組裝**,已逐檔 CRC 驗證,無來源 CRC 為零。
+**目標是做出實體卡**(PROGBK1 + CHA512Y),FBNeo 只是驗證與試玩的手段 ——
+所以 ROM 配置一律以實體板子的限制為準,不是以模擬器方便為準。
+
+**26 套全部可組裝**,已逐檔 CRC 驗證(401 個檔),無來源 CRC 為零。
 
 ## 先取得 `deltas/`
 
@@ -18,12 +21,12 @@
 | `deltas-kof96.zip` | 16 | 16.5MB | kof96ae, kof96c, kof96rss |
 | `deltas-kof97.zip` | 13 | 2.1MB | kof971v1, kof97jhph, kof97orh, kof97s |
 | `deltas-kof98.zip` | 36 | 10.4MB | kof98c2025, kof98h, kof98king, kof98pls, kof98plsc, kof98s |
-| `deltas-kof99.zip` | 2 | 639B | kof99t |
+| `deltas-kof99.zip` | 12 | 2.4MB | kof99ae, kof99t |
 | `deltas-kof2000.zip` | 17 | 18.1MB | kof2000s, kof2000sp, kof2000t |
 | `deltas-kof2001.zip` | 5 | 50KB | kof2001s |
-| `deltas-kof2002.zip` | 7 | 10KB | kf2k2pp, kof2002kai, kof2002prsp |
+| `deltas-kof2002.zip` | 17 | 86KB | kf2k2pp, kof2002kai, kof2002p33, kof2002prsp |
 | `deltas-kof2003.zip` | 3 | 1.3MB | kof2003t |
-| | **101** | **48.5MB** | 共 24 套 |
+| | **121** | **51.0MB** | 共 26 套 |
 
 ```bash
 unzip -o deltas-kof98.zip    # 解出 deltas/<crc>.bsdiff,重複執行不會互相覆蓋錯
@@ -178,7 +181,9 @@ python3 build_kof-GOTVG_offline_pack.py --check    只檢查,不寫檔
 > 別和原版放在同一處。
 
 原理:與原版相同的區塊直接從原版取,只有改版特有的內容才以差分形式收在
-`deltas/`(101 個差分,還原後共 457.5MB,差分本身 48.5MB)。
+`deltas/`(121 個差分,還原後共 556.0MB,差分本身 51.0MB)。
+槽位要求把原版一顆大 ROM 切成數顆小的(PROGBK1 的 V 放不下 8MB),由
+builder 依 manifest 的 `split` 直接從池裡切出,同樣不佔分發量。
 槽位要求但實際無資料的填充區(kof98c2025 的 `sp2b` / `p3`)由 builder 直接生成,不佔任何空間。
 
 > **kof2002 的 p2 要挑對。** `265-p2d.sp2` 需要 CRC `0a189c94`(FBNeo 名
@@ -214,9 +219,7 @@ python3 build_kof-GOTVG_offline_pack.py --check    只檢查,不寫檔
 | kof99t | KOF99 PLUS | `kof99fd` | 71/73、411 色 |
 | kof2000sp | KOF2000 SP | `kof2ksp` | 11/12、205 色 |
 | kof2001s | KOF2001 練習版 | `kof98h` | 73/73、305 色 |
-| kof2002prsp | KOF2002 UR | `kof2k2fd` | 27/27、397 色 |
-| kf2k2pp | KOF2002 PP | `kof2k2fd` | 27/27、374 色 |
-| kof2002kai | KOF2002 改 | `kof2k2fd` | 73/73、398 色 |
+
 
 
 ### 需自建驅動
@@ -228,7 +231,9 @@ python3 build_kof-GOTVG_offline_pack.py --check    只檢查,不寫檔
 | kof96ae | KOF96 AE 版 | `kof96aeg` | C 為 6×8MB;原 `kof96ae` 槽位帶 IPS 版本切換機制,不適用 |
 | kof97orh | KOF97 天國神族 | `kof97ubp` | C 為 6×8MB(標準 kof97 為 4×8M+2×4M) |
 | kof2000t / kof2000s | KOF2000 优化版 / 練習版 | `kof2000t` | 現成槽位可用,但 kof2000s 的 p1 需先解密(見下) |
-| kof2003t | KOF2003 优化版 | `kof2003tg` | PROGBK3S 佈局(1M+4M+2M),FBNeo 無對應 |
+| kof2003t | KOF2003 优化版 | `kof2003tg` | PROGBK3S 佈局(1M+4M+2M);V 拆成 4×4MB |
+| kof2002prsp / kf2k2pp / kof2002kai / kof2002p33 | KOF2002 UR / PP / 改 / CopyMix | `kof2k2g` | 四套共用。與現成的 `kof2k2fd` 只差在 V:PROGBK1 放不下 8MB,拆成 4×4MB |
+| kof99ae | KOF99 AE 版 | `kof99aeg` | 砍到 8 顆 C(64MB);官方 `kof99ae` 是 12 顆 96MB,做不成實體卡 |
 
 > **`kof2003tg` 這個名字不是筆誤。** FBNeo 本身已有一個叫 `kof2003t` 的
 > set(p1 為單顆 8MB 的 `271-p1t.p1`),與本包的 kof2003t 同名不同物,
@@ -441,7 +446,7 @@ kof95sp / kof96rss / kof98king 原為靜態驗證,現已補跑完整流程
 ## 燒錄到實機(PROGBK1 / CHA512Y)
 
 **v4.1 起,`out/` 的產出全部是解密態,沒有任何一套需要模擬器在載入時
-做解密。** 24 套的槽位逐一查過 `HARDWARE_*` 旗標與 Init 函式:
+做解密。** 26 套的槽位逐一查過 `HARDWARE_*` 旗標與 Init 函式:
 
 | 世代 | 套件 | 槽位 | 槽位載入時做什麼 |
 |---|---|---|---|
@@ -457,7 +462,8 @@ kof95sp / kof96rss / kof98king 原為靜態驗證,現已補跑完整流程
 | KOF2000 | kof2000t / kof2000s | `kof2000t` | `NeoInit`,無轉換 |
 | KOF2000 | kof2000sp | `kof2ksp` | `NeoInit`,無轉換 |
 | KOF2001 | kof2001s | `kof98h` | `NeoInit`,無轉換 |
-| KOF2002 | kf2k2pp / prsp / kai | `kof2k2fd` | `NeoInit`,無轉換 |
+| KOF2002 | kf2k2pp / prsp / kai / p33 | `kof2k2g` | `NeoInit`,無轉換 |
+| KOF99 | kof99ae | `kof99aeg` | `NeoInit`,無轉換 |
 | KOF2003 | kof2003t | `kof2003tg` | `NeoInit`,無轉換 |
 
 所有槽位的加密旗標(CMC42 / CMC50 / ENCRYPTED_M1 / SMA / PVC)**全部是
@@ -509,7 +515,7 @@ v4.2 起這兩個填充區改由 builder 生成,`parts/` 少 4.25MB;它們不是
 | | C 顆數 / 總量 | 可上 CHA512Y |
 |---|---|---|
 | kof98c2025 | 12 顆 / 96MB | ✗ |
-| 其餘 23 套 | ≤ 8 顆 / ≤ 64MB | ✓ |
+| 其餘 25 套 | ≤ 8 顆 / ≤ 64MB | ✓ |
 
 依「能否在 PCB 上重現」的判準,這一套只供模擬器使用。
 
@@ -592,6 +598,84 @@ sprite 空間**,不受單顆 ROM 邊界限制。只要 c1/c2 的內容改了,加
 
 ---
 
+## v5.1:V ROM 一律 4MB、新增兩套
+
+**核心目標是做出實體卡(PROGBK1 + CHA512Y),FBNeo 只是驗證手段。** 這一版
+把配置全面對齊實體板子的限制。
+
+### V ROM 拆成 4MB —— PROGBK1 放不下 8MB
+
+有四套的 V 是 8MB:`kf2k2pp` / `kof2002kai` / `kof2002prsp`(各 2 顆)與
+`kof2003t`(同)。其餘世代原本就都在 4MB 以內。
+
+新增 manifest 的 **`split`** 欄位(`crc -> {from, offset, length}`),由
+builder 從池裡的來源檔直接切出,**不佔任何分發量** —— 思路同既有的
+`zerofill`:能生成的就不進分發物。V ROM 是連續的 ADPCM 位址空間,切幾顆不
+影響資料排列,已用 md5 驗證 `4×4MB 串接 == 2×8MB 串接`。manifest 版本
+因此由 5 升為 6。
+
+代價是驅動:那三套 KOF2002 原本掛 FBNeo 現成的 `kof2k2fd`(宣告 2 顆 8MB
+V),拆完就對不上,改為自建的 `kof2k2g`;`kof2003tg.c` 的 V 宣告也由
+`2×0x800000` 改為 `4×0x400000`。也就是說這四套從「改名即可」變成「必須
+自己編 FBNeo」——**但實體卡本來就不經過 FBNeo,這個代價只影響試玩。**
+
+### 新增 kof2002p33(KOF2002 CopyMix,8C 版)
+
+原本因「10 顆 8MB C = 80MB,PCB 做不了」而未收錄。實測 c9 / c10 未被引用,
+砍成 8 顆後是 64MB,**剛好貼齊 CHA512Y 上限**,硬體理由不再成立。
+
+差分成本 **75KB**,且不需要新的原版 romset:c1/c2 與 `kof2002t` 相同;
+c3~c8 / p1 / p2d / s1d / m1 對 `kof2002t` 做差分(各 0.6~17KB);**V1~V4
+正好就是拆 8MB V 時產生的那四個 `split` 半塊**,成本為零。ROM 配置與
+`kof2k2g` 完全一致,所以共用同一個槽位,不必再建驅動。
+
+> 順帶更正一個說法:這套的 8 顆 C **並非**與官方解密版 `kof2k2fd` 相同 ——
+> 逐顆比對只有 c1/c2 吻合,串接後的 64MB sprite 空間有 142,039 個位元組
+> (0.21%)不同,集中在第 7、8 顆(各約 4.5%)。差異很小,但確實存在,
+> 這也是差分只要 75KB 的原因。
+
+### 新增 kof99ae(KOF99 AE 版,8C 版)
+
+官方 `kof99ae` 是 12 顆 C(96MB)加一顆 p3,超過 CHA512Y 上限。本包收的是
+砍到 8 顆 C(64MB)、且不含 p3 的版本 —— 來源檔裡 c9~c12 本來就是整片
+`0x00`(各 8MB,CRC 都是 `1ad2bc45`),原本在那裡的圖素已搬進 c7/c8,所以
+`c7ae` / `c8ae` 的差分特別大(1.2MB / 0.8MB)。
+
+差分成本 **2.47MB**,同樣不需要新的原版:基準全部落在已必備的 `kof99` 與
+`kof99fd`。自建驅動 `kof99aeg`。
+
+### 順帶修掉 pick_originals.py 的一個真實缺陷
+
+它的最小覆蓋只保證 `sources` 的 CRC,**沒把差分基準與 `split` 來源算進
+需求**,於是可能挑到「對 `sources` 等價、卻不含某個基準」的替代 romset。
+實際踩到了:它挑 `kof2003t.zip` 代替 `kof2k3fd.zip`,但前者沒有
+`271-p1d.p1`(`0d0a5861` 的差分基準),導致 kof2003t 組不出來。已修正。
+
+### 驗證
+
+把 `parts/` 完全移開、只靠 `deltas/`、`split`、`zerofill` 與自備原版組建:
+
+```
+26 套 / 401 個檔   CRC 全部正確,零錯誤
+V ROM >4MB : 無
+C ROM >64MB: 僅 kof98c2025(96MB,已知且已記載)
+```
+
+| 世代 | 差分數 | 還原後 | 差分後 | 省 |
+|---|---:|---:|---:|---:|
+| KOF95 | 2 | 2.1MB | 0.02MB | 99.1% |
+| KOF96 | 16 | 61.5MB | 16.52MB | 73.1% |
+| KOF97 | 13 | 60.1MB | 2.09MB | 96.5% |
+| KOF98 | 36 | 189.8MB | 10.42MB | 94.5% |
+| KOF99 | 12 | 46.4MB | 2.41MB | 94.8% |
+| KOF2000 | 17 | 91.5MB | 18.12MB | 80.2% |
+| KOF2001 | 5 | 17.4MB | 0.05MB | 99.7% |
+| KOF2002 | 17 | 80.2MB | 0.08MB | 99.9% |
+| KOF2003 | 3 | 7.0MB | 1.27MB | 81.9% |
+| **合計** | **121** | **556.0MB** | **50.98MB** | **90.8%** |
+
+---
+
 ## v5:分片改以對原版的 bsdiff 差分分發
 
 原本 `parts/` 收的是改版獨有的**原始二進位區塊**(101 個檔 / 457.5MB)——
@@ -648,7 +732,7 @@ bsdiff 的 add 段要逐位元組相加,但改版通常只改少數位元組、�
 已登錄進 `sources`,分片數 104 -> 101、還原後體積 477.5 -> 457.5MB。
 
 **驗證:** 把 `parts/` 完全移開、只靠 `deltas/` 與 `originals/` 組建,
-24 套 / 361 個檔的 CRC **全部正確,零錯誤**。
+26 套 / 401 個檔的 CRC **全部正確,零錯誤**。
 
 ---
 
@@ -704,7 +788,7 @@ v3.2 曾規劃三個補充包(`kof94-extra.zip`、`kof2001-decrypted.zip`、
 
 ### 無
 
-24 套全部可組裝並通過逐檔 CRC 驗證。`manifest.json` 裡每一個 CRC 都有
+26 套全部可組裝並通過逐檔 CRC 驗證。`manifest.json` 裡每一個 CRC 都有
 出處:不在 `parts/` 的,`sources` 都指得出來源 romset。v3 曾有 4 個無來源
 的檔案(kof2001s),v3.1 已修復。
 

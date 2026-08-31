@@ -1,7 +1,9 @@
 # FBNeo 1.0.0.03 轉檔需求對照表
 
-重建 kof-GOTVG_offline_pack 的 24 套所需的**全部**原版檔案。
+重建 kof-GOTVG_offline_pack 的 26 套所需的**全部**原版檔案。
 共 14 個 zip / 117 個檔 / 549.5MB(SPLIT set),依 KOF 世代排列。
+v5.1 新增的 kof2002p33 與 kof99ae **沒有引入新的原版需求** —— 它們的
+差分基準與切分來源都落在這 14 個 zip 內。
 
 來源:`libretro/FBNeo` **`master` 分支** `dats/` 目錄下的官方 DAT,
 `<version>1.0.0.03</version>`,**隨包附上**
