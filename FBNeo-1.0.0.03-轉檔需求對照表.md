@@ -1,9 +1,10 @@
 # FBNeo 1.0.0.03 轉檔需求對照表
 
-重建 kof-GOTVG_offline_pack 的 26 套所需的**全部**原版檔案。
-共 14 個 zip / 117 個檔 / 549.5MB(SPLIT set),依 KOF 世代排列。
+重建 kof-GOTVG_offline_pack 的 27 套所需的**全部**原版檔案。
+共 15 個 zip / 120 個檔 / 569.5MB(SPLIT set),依 KOF 世代排列。
 v5.1 新增的 kof2002p33 與 kof99ae **沒有引入新的原版需求** —— 它們的
 差分基準與切分來源都落在這 14 個 zip 內。
+v5.2 新增的 kof97t **引入一個新的原版:`kof97t.zip`**(FBNeo 內建,見 KOF97)。
 
 來源:`libretro/FBNeo` **`master` 分支** `dats/` 目錄下的官方 DAT,
 `<version>1.0.0.03</version>`,**隨包附上**
@@ -23,8 +24,8 @@ https://raw.githubusercontent.com/libretro/FBNeo/master/dats/FinalBurn%20Neo%20(
 > 兩份都寫 1.0.0.03 但內容不同是正常的 —— **以 sha256 與 game 數為準**。
 只列 SPLIT set 中**實際存在於該 zip** 的檔案(帶 `merge=` 的繼承項目已排除)。
 
-> **對 DAT 實查過(2026-08-31)。** 下表 14 個 zip / 117 個檔的 CRC 拿去 DAT
-> 裡逐一比對,**全數命中、零缺漏**;且 117 個檔**全部實體存在於自己的 zip,
+> **對 DAT 實查過(2026-08-31;kof97t.zip 的 3 檔於 2026-09-29 補查)。** 下表 15 個 zip / 120 個檔的 CRC 拿去 DAT
+> 裡逐一比對,**全數命中、零缺漏**;且 120 個檔**全部實體存在於自己的 zip,
 > 沒有任何一個是 `merge=` 繼承**。所以 SPLIT romset 就足夠 —— `kof2002t`
 > 與 `kof2k3fd` 雖然分別是 `kof2002` / `kof2003` 的 clone,**不需要**額外
 > 準備那兩個母集 zip。
@@ -42,6 +43,7 @@ https://raw.githubusercontent.com/libretro/FBNeo/master/dats/FinalBurn%20Neo%20(
 | KOF95 | `kof95.zip` | 12 | 29.1MB |
 | KOF96 | `kof96.zip` | 13 | 44.1MB |
 | KOF97 | `kof97.zip` | 12 | 56.2MB |
+| KOF97 | `kof97t.zip` | 3 | 20.0MB |
 | KOF98 | `kof98.zip` | 12 | 64.4MB |
 | KOF99 | `kof99.zip` | 5 | 14.1MB |
 | KOF99 | `kof99fd.zip` | 9 | 68.0MB |
@@ -50,7 +52,7 @@ https://raw.githubusercontent.com/libretro/FBNeo/master/dats/FinalBurn%20Neo%20(
 | KOF2001 | `kof2k1fd.zip` | 7 | 52.0MB |
 | KOF2002 | `kof2002t.zip` | 13 | 84.2MB |
 | KOF2003 | `kof2k3fd.zip` | 12 | 81.0MB |
-| | **合計** | **117** | **549.5MB** |
+| | **合計** | **120** | **569.5MB** |
 
 > `kof94nr2.zip`(1 檔)與 `kof94rz.zip`(1 檔)都是 FBNeo DAT 內的正規
 > clone set,完整 romset 裡就有,不需要另外找補充包。
@@ -144,16 +146,31 @@ https://raw.githubusercontent.com/libretro/FBNeo/master/dats/FinalBurn%20Neo%20(
 |---|---|---|---|
 | `232-c1.c1` | `5f8bf0a1` | 8192KB | kof971v1, kof97s |
 | `232-c2.c2` | `e4d45c81` | 8192KB | kof971v1, kof97s |
-| `232-c3.c3` | `581d6618` | 8192KB | kof971v1, kof97jhph, kof97orh, kof97s |
-| `232-c4.c4` | `49bb1e68` | 8192KB | kof971v1, kof97jhph, kof97orh, kof97s |
-| `232-c5.c5` | `34fc4e51` | 4096KB | kof971v1, kof97jhph, kof97s |
-| `232-c6.c6` | `4ff4d47b` | 4096KB | kof971v1, kof97jhph, kof97s |
-| `232-m1.m1` | `45348747` | 128KB | kof971v1, kof97jhph, kof97orh, kof97s |
+| `232-c3.c3` | `581d6618` | 8192KB | kof971v1, kof97jhph, kof97orh, kof97s, kof97t |
+| `232-c4.c4` | `49bb1e68` | 8192KB | kof971v1, kof97jhph, kof97orh, kof97s, kof97t |
+| `232-c5.c5` | `34fc4e51` | 4096KB | kof971v1, kof97jhph, kof97s, kof97t |
+| `232-c6.c6` | `4ff4d47b` | 4096KB | kof971v1, kof97jhph, kof97s, kof97t |
+| `232-m1.m1` | `45348747` | 128KB | kof971v1, kof97jhph, kof97orh, kof97s, kof97t |
 | `232-p2.sp2` | `158b23f6` | 4096KB | kof971v1, kof97s |
-| `232-s1.s1` | `8514ecf5` | 128KB | kof971v1, kof97jhph, kof97s |
-| `232-v1.v1` | `22a2b5b5` | 4096KB | kof971v1, kof97jhph, kof97orh, kof97s |
-| `232-v2.v2` | `2304e744` | 4096KB | kof971v1, kof97jhph, kof97orh, kof97s |
-| `232-v3.v3` | `759eb954` | 4096KB | kof971v1, kof97jhph, kof97orh, kof97s |
+| `232-s1.s1` | `8514ecf5` | 128KB | kof971v1, kof97jhph, kof97s, kof97t |
+| `232-v1.v1` | `22a2b5b5` | 4096KB | kof971v1, kof97jhph, kof97orh, kof97s, kof97t |
+| `232-v2.v2` | `2304e744` | 4096KB | kof971v1, kof97jhph, kof97orh, kof97s, kof97t |
+| `232-v3.v3` | `759eb954` | 4096KB | kof971v1, kof97jhph, kof97orh, kof97s, kof97t |
+
+---
+
+## `kof97t.zip` — 3 檔 / 20.0MB
+
+| 檔名 | CRC32 | 大小 | 用於 |
+|---|---|---|---|
+| `232-c1t.c1` | `b7f5a3b9` | 8192KB | kof97t |
+| `232-c2t.c2` | `959d6d78` | 8192KB | kof97t |
+| `232-p2t.sp2` | `d9e51750` | 4096KB | kof97t |
+
+> 同一個 zip 裡的 `232-p1t.p1`(`45834e9b`,1024KB)是 kof97t p1 的**差分
+> 基準**,不直接取用 —— 它是**未修補**的版本,原封燒錄在 PCB 上會出問題;
+> 本包的 p1 是它烘入 FBNeo `kof97tPatchCallback` 361 點修補後的 `c69e5169`。
+> zip 內另外 7 個 `.dif` 是 FBNeo 用來切換「Optimized 2020」版本的差分,本包不用。
 
 ---
 

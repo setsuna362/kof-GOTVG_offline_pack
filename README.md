@@ -1,11 +1,11 @@
-# KOF GOTVG 離線包 v5.1
+# KOF GOTVG 離線包 v5.2
 
-26 套游聚(GOTVG)KOF 改版,**全部經 FBNeo 實測可執行**。
+27 套游聚(GOTVG)KOF 改版,**全部經 FBNeo 實測可執行**。
 
 **目標是做出實體卡**(PROGBK1 + CHA512Y),FBNeo 只是驗證與試玩的手段 ——
 所以 ROM 配置一律以實體板子的限制為準,不是以模擬器方便為準。
 
-**26 套全部可組裝**,已逐檔 CRC 驗證(401 個檔),無來源 CRC 為零。
+**27 套全部可組裝**,已逐檔 CRC 驗證(414 個檔),無來源 CRC 為零。
 
 ## 先取得 `deltas/`
 
@@ -19,14 +19,14 @@
 | **不需要** | 0 | — | kof94ru |
 | `deltas-kof95.zip` | 2 | 20KB | kof95sp |
 | `deltas-kof96.zip` | 16 | 16.5MB | kof96ae, kof96c, kof96rss |
-| `deltas-kof97.zip` | 13 | 2.1MB | kof971v1, kof97jhph, kof97orh, kof97s |
+| `deltas-kof97.zip` | 14 | 2.1MB | kof971v1, kof97jhph, kof97orh, kof97s, kof97t |
 | `deltas-kof98.zip` | 36 | 10.4MB | kof98c2025, kof98h, kof98king, kof98pls, kof98plsc, kof98s |
 | `deltas-kof99.zip` | 12 | 2.4MB | kof99ae, kof99t |
 | `deltas-kof2000.zip` | 17 | 18.1MB | kof2000s, kof2000sp, kof2000t |
 | `deltas-kof2001.zip` | 5 | 50KB | kof2001s |
 | `deltas-kof2002.zip` | 17 | 86KB | kf2k2pp, kof2002kai, kof2002p33, kof2002prsp |
 | `deltas-kof2003.zip` | 3 | 1.3MB | kof2003t |
-| | **121** | **51.0MB** | 共 26 套 |
+| | **122** | **51.0MB** | 共 27 套 |
 
 ```bash
 unzip -o deltas-kof98.zip    # 解出 deltas/<crc>.bsdiff,重複執行不會互相覆蓋錯
@@ -181,7 +181,7 @@ python3 build_kof-GOTVG_offline_pack.py --check    只檢查,不寫檔
 > 別和原版放在同一處。
 
 原理:與原版相同的區塊直接從原版取,只有改版特有的內容才以差分形式收在
-`deltas/`(121 個差分,還原後共 556.0MB,差分本身 51.0MB)。
+`deltas/`(122 個差分,還原後共 557.0MB,差分本身 51.0MB)。
 槽位要求把原版一顆大 ROM 切成數顆小的(PROGBK1 的 V 放不下 8MB),由
 builder 依 manifest 的 `split` 直接從池裡切出,同樣不佔分發量。
 槽位要求但實際無資料的填充區(kof98c2025 的 `sp2b` / `p3`)由 builder 直接生成,不佔任何空間。
@@ -210,6 +210,7 @@ builder 依 manifest 的 `split` 直接從池裡切出,同樣不佔分發量。
 | kof97s | KOF97 練習版 | `kof97` | 73/73、533 色 |
 | kof97jhph | KOF97 進化平衡版 | `kof97` | 73/73、553 色 |
 | kof971v1 | KOF97 1v1 專區版 | `kof97` | 73/73、529 色 |
+| kof97t | KOF97 優化版(PCB 可燒版) | `kof97` | 複查報告通過 ※ |
 | kof98pls | KOF98 風雲再起 | `kof98h` | 73/73、381 色 |
 | kof98s | KOF98 練習版 | `kof98h` | 73/73、382 色 |
 | kof98h | KOF98 plus | `kof98h` | 73/73、381 色 |
@@ -446,7 +447,7 @@ kof95sp / kof96rss / kof98king 原為靜態驗證,現已補跑完整流程
 ## 燒錄到實機(PROGBK1 / CHA512Y)
 
 **v4.1 起,`out/` 的產出全部是解密態,沒有任何一套需要模擬器在載入時
-做解密。** 26 套的槽位逐一查過 `HARDWARE_*` 旗標與 Init 函式:
+做解密。** 27 套的槽位逐一查過 `HARDWARE_*` 旗標與 Init 函式:
 
 | 世代 | 套件 | 槽位 | 槽位載入時做什麼 |
 |---|---|---|---|
@@ -454,7 +455,7 @@ kof95sp / kof96rss / kof98king 原為靜態驗證,現已補跑完整流程
 | KOF95 | kof95sp | `kof95` | `NeoInit`,無轉換 |
 | KOF96 | kof96c / kof96rss | `kof96` | `NeoInit`,無轉換 |
 | KOF96 | kof96ae | `kof96aeg` | `NeoInit`,無轉換 |
-| KOF97 | kof97s / kof97jhph / kof971v1 | `kof97` | `NeoInit`,無轉換 |
+| KOF97 | kof97s / kof97jhph / kof971v1 / kof97t | `kof97` | `NeoInit`,無轉換 |
 | KOF97 | kof97orh | `kof97ubp` | 一個位元組補丁,見下 |
 | KOF98 | kof98pls / s / h / plsc / king | `kof98h` | `NeoInit`,無轉換 |
 | KOF98 | kof98c2025 | `kof98cp` | 額外映射,見下 |
@@ -595,6 +596,62 @@ sprite 空間**,不受單顆 ROM 邊界限制。只要 c1/c2 的內容改了,加
 
 **所以對 CMC42 / CMC50 加密的套件,必須先解密才能判斷有沒有獨有內容。**
 若照加密態的 CRC 收錄,kof2002kai 會多佔 `parts/` 64MB —— 實際只需 5MB。
+
+---
+
+## v5.2:收錄 kof97t(PCB 可燒版)
+
+### 為什麼之前沒收
+
+FBNeo 本身就有 `kof97t`(「The King of Fighters '97 (Optimized, Hack)」),
+p2 / c1 / c2 的 CRC 與游聚版完全相同,所以一度被當成「FBNeo 已有,略過」。
+**這個判斷是錯的** —— FBNeo 的 `kof97tInit` 會**無條件**掛上
+`kof97tPatchCallback`,載入時改寫 p1 的 **361 個位元組**(崩潰修正)。
+那份 zip 本身的 `232-p1t.p1`(`45834e9b`)是**未修補**的,原封燒到 PCB 上
+跑的就是會出問題的那版。CRC 相同不代表行為相同。
+
+所以收錄判準要更精確:**原封燒錄就能跑、不依賴任何 PatchCallback 或 Init
+修補**,才算「FBNeo 已有」。
+
+### 本包收的是什麼
+
+p1 = FBNeo `45834e9b` **烘入** `kof97tPatchCallback` 的 361 點修補 →
+**`c69e5169`**。其餘與 FBNeo `kof97t` / 原廠 `kof97` 相同。
+
+| 檔案 | CRC | 來源 |
+|---|---|---|
+| `232-p1.p1` | `c69e5169` | 差分,基準 `45834e9b`(FBNeo `kof97t`),**632 bytes** |
+| `232-p2.sp2` | `d9e51750` | FBNeo `kof97t` |
+| `232-c1.c1` / `c2` | `b7f5a3b9` / `959d6d78` | FBNeo `kof97t` |
+| 其餘 9 檔 | — | 原廠 `kof97` |
+
+**需要新的原版:`kof97t.zip`**(FBNeo 1.0.0.03 內建)。
+
+驗證:
+
+- 從上游 `d_neogeo.cpp` 取出 `kof97tPatchCallback` 的修補表(361 筆),
+  對 `45834e9b` 套用後得到 `c69e5169`,與游聚快取重建版**逐位元組相同**;
+  361 個相異位元組全部落在 `$1A0–$1EB`、`$9EBE–$9EC3`、`$22458–$227FF`。
+- 修補只存在於 dipswitch 預設分支(`case 0x00`)。另一分支「Optimized
+  2020」是用 `.dif` 疊出來的不同版本,不在本包範圍。
+- 槽位旗標只有 `CARTRIDGE | SNK_NEOGEO`,無加密、無保護晶片。
+- p1 / p2 對 `$9xxxxx` 記憶卡窗口的絕對參照:**0 筆**。p1 內兩個 `4E7C`
+  字組在原廠 kof97 同位置也存在,前後是 `4E7B/4E7C/4E7D` 連號資料表,
+  不是平台鉤子。
+- 組裝產出與重建版 + 原廠 kof97 **13 檔逐檔 CRC 一致**;全庫
+  `--check` 27/27 可組裝。
+
+> ※ 模擬器實測(distinct / colors)取自另一台機器的 PCB 與模擬器複查
+> 報告,本機未重跑。
+
+### builder:同名 zip 排除規則修正
+
+本包套件名 `kof97t` 與 FBNeo 原版 `kof97t.zip` 同名。扁平目錄模式原本會
+把所有與套件同名的 zip 擋在池外,結果是 builder 回報「缺 kof97t.zip」,
+而那個 zip 就在旁邊。改為:**`sources` 有指名為來源的 zip 不排除**。
+組裝時差分與 `parts/` 永遠優先,同名 zip 進池也只提供 CRC 相同的內容,
+不會重現 v3 的自我去重缺陷(那發生在產生分片時,不是組裝時)。
+`kof98h` 沒有被任何來源指名,維持排除。
 
 ---
 
@@ -788,13 +845,13 @@ v3.2 曾規劃三個補充包(`kof94-extra.zip`、`kof2001-decrypted.zip`、
 
 ### 無
 
-26 套全部可組裝並通過逐檔 CRC 驗證。`manifest.json` 裡每一個 CRC 都有
-出處:不在 `parts/` 的,`sources` 都指得出來源 romset。v3 曾有 4 個無來源
+27 套全部可組裝並通過逐檔 CRC 驗證。`manifest.json` 裡每一個 CRC 都有
+出處:不在 `deltas/` 的,`sources` 都指得出來源 romset。v3 曾有 4 個無來源
 的檔案(kof2001s),v3.1 已修復。
 
 ### 其他
 
 - 部分套件的 CRC 與 FBNeo 驅動定義不同,載入時需關閉 CRC 檢查,
   或放在 `<system>/fbneo/patched/` 由檔名比對載入。
-- 未收錄:kf2k1allboss(16 顆 8MB C = 128MB,PCB 做不了)、
-  kof2002p33(10 顆 8MB C = 80MB,同上)、kovplus(PGM 平台)。
+- 未收錄:kf2k1allboss(16 顆 8MB C = 128MB,PCB 做不了)、kovplus(PGM 平台)。
+  (kof2002p33 原本也列在這裡,v5.1 起已收錄,見該節。)

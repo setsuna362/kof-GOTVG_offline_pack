@@ -116,7 +116,10 @@ if args:
             sys.exit(f"認不得的世代:{a}(可用:{', '.join(g[3:] for g in GEN_ORDER)})")
         want_gen.add(hit[0])
 
-FORBID = set(SETS)      # 與本包套件同名的 zip 一律不進池
+# 與本包套件同名的 zip 不進池 —— 除非 sources 指名它就是原版來源
+# (例:本包的 kof97t 要從 FBNeo 的 kof97t.zip 取 p2/c1/c2)。
+# 組裝時 parts/ 永遠優先,同名 zip 進池也只會提供 CRC 相同的內容。
+FORBID = set(SETS) - set(SOURCES.values())
 
 # 為什麼不用「必要原版檔名白名單」:原版的檔名並不固定 —— 例如解密版的
 # kof99 可能就叫 kof99.zip,內含的卻是 152-*.bin。用檔名過濾只會誤殺。

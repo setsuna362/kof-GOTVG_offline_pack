@@ -31,7 +31,7 @@ ap.add_argument("--verify", action="store_true",
 ap.add_argument("--needed", action="store_true",
                 help="只列出需要哪些原版 zip(不掃描),供 torrent 勾選用")
 ap.add_argument("--checklist", action="store_true",
-                help="印出 14 個 zip 的完整檔名 + CRC32 清單(依隨包 DAT 生成)")
+                help="印出 15 個 zip 的完整檔名 + CRC32 清單(依隨包 DAT 生成)")
 a = ap.parse_args()
 
 MAN = json.load(open(os.path.join(H, "manifest.json"), encoding="utf-8"))
@@ -142,7 +142,7 @@ if a.checklist:
     if absent:
         print(f"\n⚠️ 這份 DAT 少了 {len(absent)} 個本包需要的 set:"
               f"{', '.join(absent)}")
-        print("   隨包 DAT 應該要含有全部 14 個 —— 出現這行表示 dats/ 底下那份")
+        print("   隨包 DAT 應該要含有全部 15 個 —— 出現這行表示 dats/ 底下那份")
         print("   被換成了較舊或不同的版本,manifest 與它已經對不上。")
     print("\n驗證自己的 romset:把整包丟進 romset/ 後跑")
     print("  python3 pick_originals.py --dry-run --verify")
