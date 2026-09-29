@@ -1,0 +1,25 @@
+﻿// KOF97 1v1 standalone (kof97x) - FBNeo RomData
+// Put this file in:  <FBNeo folder>\support\romdata\kof971v1.dat
+// Put kof971v1.zip (containing 232-p1.p1, 232-p2.sp2, 232-c7.c7, 232-c8.c8) in the same roms folder as kof97.zip.
+// S1, C1-C6, M1, V1-V3 are read from the original kof97.zip; the BIOS from neogeo.zip.
+// Load: Game > Open RomData manager (Ctrl+R), or Game > Quick load game > Select RomData dat...
+
+ZipName:kof971v1
+DrvName:kof97
+FullName:"The King of Fighters '97 1v1 (kof97x standalone)"
+
+232-p1.p1,  0x00100000, 0xdf5bcd45, 1 | BRF_ESS | BRF_PRG
+232-p2.sp2, 0x00400000, 0x158b23f6, 1 | BRF_ESS | BRF_PRG
+232-s1.s1,  0x00020000, 0x8514ecf5, 2 | BRF_GRA
+232-c1.c1,  0x00800000, 0x5f8bf0a1, 3 | BRF_GRA
+232-c2.c2,  0x00800000, 0xe4d45c81, 3 | BRF_GRA
+232-c3.c3,  0x00800000, 0x581d6618, 3 | BRF_GRA
+232-c4.c4,  0x00800000, 0x49bb1e68, 3 | BRF_GRA
+232-c5.c5,  0x00400000, 0x34fc4e51, 3 | BRF_GRA
+232-c6.c6,  0x00400000, 0x4ff4d47b, 3 | BRF_GRA
+232-c7.c7,  0x00400000, 0x52e3e602, 3 | BRF_GRA
+232-c8.c8,  0x00400000, 0x01cf5d51, 3 | BRF_GRA
+232-m1.m1,  0x00020000, 0x45348747, 4 | BRF_ESS | BRF_PRG
+232-v1.v1,  0x00400000, 0x22a2b5b5, 5 | BRF_SND
+232-v2.v2,  0x00400000, 0x2304e744, 5 | BRF_SND
+232-v3.v3,  0x00400000, 0x759eb954, 5 | BRF_SND

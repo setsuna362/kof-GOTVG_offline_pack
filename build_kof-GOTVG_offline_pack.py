@@ -165,6 +165,12 @@ OUT = os.path.join(H, "out")
 if not CHECK_ONLY:
     os.makedirs(OUT, exist_ok=True)
 
+# 以 FBNeo RomData 載入的套件:沿用現成驅動(host),但 ROM 清單比該槽位多
+# (例:kof97s / kof971v1 多出 c7/c8)。由 dats/romdata/ 有無同名 .dat 判定。
+_rd = os.path.join(H, "dats", "romdata")
+ROMDATA = ({f[:-4] for f in os.listdir(_rd) if f.endswith(".dat")}
+           if os.path.isdir(_rd) else set())
+
 bygen = defaultdict(list)
 for name, e in SETS.items():
     bygen[e["gen"]].append(name)
@@ -236,14 +242,17 @@ for gen in GEN_ORDER:
             print(f"   {name:12} 略過 — 缺 {len(missing)} 檔")
             skip += 1
             continue
+        # 有 RomData 的套件不能改名成 host 載入(host 槽位不認得多出來的 ROM)
+        load = (f"RomData dats/romdata/{name}.dat(不要改名)" if name in ROMDATA
+                else f"載入名稱: {e['host']}.zip")
         if CHECK_ONLY:
-            print(f"   {name:12} 可組裝     載入名稱: {e['host']}.zip")
+            print(f"   {name:12} 可組裝     {load}")
         else:
             with zipfile.ZipFile(os.path.join(OUT, name + ".zip"), "w",
                                  zipfile.ZIP_DEFLATED, compresslevel=6) as z:
                 for fn in sorted(data):
                     z.writestr(fn, data[fn])
-            print(f"   {name:12} -> out/{name}.zip     載入名稱: {e['host']}.zip")
+            print(f"   {name:12} -> out/{name}.zip     {load}")
         ok += 1
 
 print(f"\n{'可組裝' if CHECK_ONLY else '完成'} {ok} 套,略過 {skip} 套。")
@@ -251,6 +260,9 @@ print("需 neogeo.zip(BIOS)。把某套改名為上表的『載入名稱』後�
 print("FBNeo 請放到 <system>/fbneo/patched/ 內。")
 # 哪些套件掛在 FBNeo 沒有的槽位 —— 由 drivers/ 底下有沒有同名 .c 判定,
 # 免得每次增修套件都要回來改這行字。
+if ROMDATA & set(SETS):
+    print(f"{', '.join(sorted(ROMDATA & set(SETS)))} 以 FBNeo RomData 載入 —— "
+          "保持 out/ 的檔名,dats/romdata/ 同名 .dat 放進 <FBNeo>/support/romdata/")
 _cust = sorted({e["host"] for e in SETS.values()
                 if os.path.isfile(os.path.join(H, "drivers", e["host"] + ".c"))})
 if _cust:

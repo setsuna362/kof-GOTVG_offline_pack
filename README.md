@@ -1,4 +1,4 @@
-# KOF GOTVG 離線包 v5.3
+# KOF GOTVG 離線包 v5.4
 
 27 套游聚(GOTVG)KOF 改版,**全部經 FBNeo 實測可執行**。
 
@@ -19,14 +19,14 @@
 | **不需要** | 0 | — | kof94ru |
 | `deltas-kof95.zip` | 2 | 20KB | kof95sp |
 | `deltas-kof96.zip` | 16 | 16.5MB | kof96ae, kof96c, kof96rss |
-| `deltas-kof97.zip` | 14 | 2.1MB | kof971v1, kof97jhph, kof97orh, kof97s, kof97t |
+| `deltas-kof97.zip` | 16 | 2.1MB | kof971v1, kof97jhph, kof97orh, kof97s, kof97t |
 | `deltas-kof98.zip` | 36 | 10.4MB | kof98c2025, kof98h, kof98king, kof98pls, kof98plsc, kof98s |
 | `deltas-kof99.zip` | 12 | 2.4MB | kof99ae, kof99t |
 | `deltas-kof2000.zip` | 17 | 18.1MB | kof2000s, kof2000sp, kof2000t |
 | `deltas-kof2001.zip` | 5 | 50KB | kof2001s |
 | `deltas-kof2002.zip` | 17 | 86KB | kf2k2pp, kof2002kai, kof2002p33, kof2002prsp |
 | `deltas-kof2003.zip` | 3 | 1.3MB | kof2003t |
-| | **122** | **51.0MB** | 共 27 套 |
+| | **124** | **51.0MB** | 共 27 套 |
 
 ```bash
 unzip -o deltas-kof98.zip    # 解出 deltas/<crc>.bsdiff,重複執行不會互相覆蓋錯
@@ -181,7 +181,7 @@ python3 build_kof-GOTVG_offline_pack.py --check    只檢查,不寫檔
 > 別和原版放在同一處。
 
 原理:與原版相同的區塊直接從原版取,只有改版特有的內容才以差分形式收在
-`deltas/`(122 個差分,還原後共 557.0MB,差分本身 51.0MB)。
+`deltas/`(124 個差分,還原後共 565.0MB,差分本身 51.0MB)。
 槽位要求把原版一顆大 ROM 切成數顆小的(PROGBK1 的 V 放不下 8MB),由
 builder 依 manifest 的 `split` 直接從池裡切出,同樣不佔分發量。
 槽位要求但實際無資料的填充區(kof98c2025 的 `sp2b` / `p3`)由 builder 直接生成,不佔任何空間。
@@ -207,9 +207,7 @@ builder 依 manifest 的 `split` 直接從池裡切出,同樣不佔分發量。
 | kof94ru | KOF94 RU | `kof94` | 73/73、347 色 |
 | kof96c | KOF96 連擊版 | `kof96` | 73/73、500 色 |
 | kof96rss | KOF96 RSS | `kof96` | 73/73、452 色 |
-| kof97s | KOF97 練習版 | `kof97` | 73/73、533 色 |
 | kof97jhph | KOF97 進化平衡版 | `kof97` | 73/73、553 色 |
-| kof971v1 | KOF97 1v1 專區版 | `kof97` | 73/73、529 色 |
 | kof97t | KOF97 優化版(PCB 可燒版) | `kof97` | 複查報告通過 ※ |
 | kof98pls | KOF98 風雲再起 | `kof98h` | 73/73、381 色 |
 | kof98s | KOF98 練習版 | `kof98h` | 73/73、382 色 |
@@ -235,6 +233,18 @@ builder 依 manifest 的 `split` 直接從池裡切出,同樣不佔分發量。
 | kof2003t | KOF2003 优化版 | `kof2003tg` | PROGBK3S 佈局(1M+4M+2M);V 拆成 4×4MB |
 | kof2002prsp / kf2k2pp / kof2002kai / kof2002p33 | KOF2002 UR / PP / 改 / CopyMix | `kof2k2g` | 四套共用。與現成的 `kof2k2fd` 只差在 V:PROGBK1 放不下 8MB,拆成 4×4MB |
 | kof99ae | KOF99 AE 版 | `kof99aeg` | 砍到 8 顆 C(64MB);官方 `kof99ae` 是 12 顆 96MB,做不成實體卡 |
+
+### 以 FBNeo RomData 載入(沿用現成驅動,ROM 清單較多)
+
+槽位本身可用,但 ROM 比該槽位宣告的多,**不能改名成槽位名載入**(多出來的
+ROM 會被忽略)。改用 RomData:把 `dats/romdata/` 的同名 `.dat` 放進
+`<FBNeo>/support/romdata/`,`out/` 產出的 zip **保持原檔名**,從
+Game > Open RomData manager(Ctrl+R)載入。不需要編譯 FBNeo。
+
+| 套件 | 中文名 | RomData 借用的驅動 | 多出的 ROM |
+|---|---|---|---|
+| kof97s | KOF97 練習版 | `kof97` | c7 / c8(各 4MB),見 v5.4 |
+| kof971v1 | KOF97 1v1 專區版 | `kof97` | c7 / c8(各 4MB,與 kof97s 同一組),見 v5.4 |
 
 > **`kof2003tg` 這個名字不是筆誤。** FBNeo 本身已有一個叫 `kof2003t` 的
 > set(p1 為單顆 8MB 的 `271-p1t.p1`),與本包的 kof2003t 同名不同物,
@@ -455,7 +465,8 @@ kof95sp / kof96rss / kof98king 原為靜態驗證,現已補跑完整流程
 | KOF95 | kof95sp | `kof95` | `NeoInit`,無轉換 |
 | KOF96 | kof96c / kof96rss | `kof96` | `NeoInit`,無轉換 |
 | KOF96 | kof96ae | `kof96aeg` | `NeoInit`,無轉換 |
-| KOF97 | kof97s / kof97jhph / kof971v1 / kof97t | `kof97` | `NeoInit`,無轉換 |
+| KOF97 | kof97jhph / kof97t | `kof97` | `NeoInit`,無轉換 |
+| KOF97 | kof97s / kof971v1 | `kof97`(RomData) | `NeoInit`,無轉換;C 為 8 顆,見 v5.4 |
 | KOF97 | kof97orh | `kof97ubp` | 一個位元組補丁,見下 |
 | KOF98 | kof98pls / s / h / plsc / king | `kof98h` | `NeoInit`,無轉換 |
 | KOF98 | kof98c2025 | `kof98cp` | 額外映射,見下 |
@@ -596,6 +607,46 @@ sprite 空間**,不受單顆 ROM 邊界限制。只要 c1/c2 的內容改了,加
 
 **所以對 CMC42 / CMC50 加密的套件,必須先解密才能判斷有沒有獨有內容。**
 若照加密態的 CRC 收錄,kof2002kai 會多佔 `parts/` 64MB —— 實際只需 5MB。
+
+---
+
+## v5.4:kof97s / kof971v1 換新版,多出 c7 / c8
+
+兩套都換成新版,改動相同:p1 各自更新,並**多出 c7 / c8 兩顆 4MB**(兩套用
+同一組)。p2 與 c1~c6、m1、s1、v1~v3 仍是原廠 kof97。
+
+| 檔案 | kof97s | kof971v1 |
+|---|---|---|
+| `232-p1.p1` | `eadbfb49` → `17d55d20`(0.17%) | `aa2f85a2` → `df5bcd45`(0.06%) |
+| `232-c7.c7`(新增,4MB) | `52e3e602` | 同左 |
+| `232-c8.c8`(新增,4MB) | `01cf5d51` | 同左 |
+
+四個 CRC 都**未登錄於 FBNeo**。
+
+**c7 / c8 幾乎全是填充。** 各 4MB 裡只有最後 1KB(`$3FFC00–$3FFEFF`)約
+740 bytes 是圖素,其餘整片 `0xFF`。C ROM 依序串接後,那段落在 sprite 空間
+40~48MB 的最尾端,約 12 個 tile(`0x5FFF0` 一帶)—— 新 p1 的小幅改動就是在
+引用這幾個 tile。差分因此很小:c7 825 bytes、c8 750 bytes(以原廠 c5 / c6
+為基準),p1 3.4KB / 5.7KB(以原廠 kof97 p1 為基準)。
+
+**C 的排列必須是 c1~c4 8MB、c5~c8 4MB,依序串接。** FBNeo 是這樣載入的
+(`kof97` 驅動 = `NeoInit`,無修補),新 p1 也是以此為前提。實體卡上,c7 / c8
+這一對必須接在 40MB 起;作者的板子已具備第 4 對晶片,只需燒入這 2 顆,
+所以維持 8 顆、不合併成 6 顆 8MB。(若板子的第 4 對不在 40MB,改把 c5+c7、
+c6+c8 各合成一顆 8MB 即可得到相同的位址排列。)
+
+**FBNeo 載入改用 RomData。** `kof97` 槽位只宣告 c1~c6,改名成 `kof97.zip`
+會丟掉 c7 / c8。本包附上兩份 RomData(`dats/romdata/kof97s.dat`、
+`kof971v1.dat`),`DrvName:kof97` 加上擴充的 ROM 清單。builder 看到
+`dats/romdata/` 有同名 `.dat` 時,會改提示用 RomData 載入、不要改名。
+
+PCB 條件複查:兩個 p1 皆明文(`NEO-GEO` 檔頭齊全,熵 5.70 / 5.72),
+`$9xxxxx` 參照 0 筆;p1 內兩個 `4E7C` 與 v5.2 查過的原廠 kof97 資料表相同。
+p1 舊差分(`eadbfb49`、`aa2f85a2`)已無其他套件使用,移除。
+
+驗證:兩套組裝產出各 15 檔,與 RomData 宣告的大小、CRC 逐檔一致。
+
+> 模擬器實測(distinct / colors)本機未重跑。
 
 ---
 
