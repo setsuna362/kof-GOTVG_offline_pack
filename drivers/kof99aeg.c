@@ -6,8 +6,8 @@
 // 素材全為解密態,故用 NeoInit,不做任何載入時轉換;s1 隨包提供而非由 C
 // 生成,所以需要 ALTERNATE_TEXT(與 kof99fd 槽位同樣的處理)。
 static struct BurnRomInfo kof99aegRomDesc[] = {
-	{ "152-p1ae.p1",		0x100000, 0x549f3184, 1 | BRF_ESS | BRF_PRG },
-	{ "152-p2ae.sp2",		0x400000, 0xcdde0ad4, 1 | BRF_ESS | BRF_PRG },
+	{ "152-p1ae.p1",		0x100000, 0x71e06986, 1 | BRF_ESS | BRF_PRG },
+	{ "152-p2ae.sp2",		0x400000, 0x88720dea, 1 | BRF_ESS | BRF_PRG },
 
 	{ "251-s1ae.s1",		0x020000, 0x3c31ee43, 2 | BRF_GRA },
 
@@ -17,8 +17,8 @@ static struct BurnRomInfo kof99aegRomDesc[] = {
 	{ "251-c4d.c4",		0x800000, 0x6bc8e4b1, 3 | BRF_GRA },
 	{ "251-c5d.c5",		0x800000, 0x9746268c, 3 | BRF_GRA },
 	{ "251-c6d.c6",		0x800000, 0x238b3e71, 3 | BRF_GRA },
-	{ "251-c7ae.c7",		0x800000, 0xcd40fe9b, 3 | BRF_GRA },
-	{ "251-c8ae.c8",		0x800000, 0x9e3b8fe3, 3 | BRF_GRA },
+	{ "251-c7ae.c7",		0x800000, 0xf568b040, 3 | BRF_GRA },
+	{ "251-c8ae.c8",		0x800000, 0xc27a8180, 3 | BRF_GRA },
 
 	{ "251-m1ae.m1",		0x020000, 0xf847e188, 4 | BRF_ESS | BRF_PRG },
 
