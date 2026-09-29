@@ -1,0 +1,35 @@
+// kof99ae8c — KOF99AE 8C (CHA512Y donor cart) romdata for FBNeo
+// p1 = cand11, p2 / c7 / c8 = cand6, everything else = original GOTVG 20200407.
+// 12C 版的 152-p3ae.p3 和 251-c9ae.c9 - 251-c12ae.c12 已經拿掉：
+//   p3  cand6 不會切到那些 bank，實機卡帶也沒有這顆
+//   c9-c12  在 12C 驅動裡是 c1-c4 的複本，用來模擬 8C 卡帶超過 64MB 的位址折回；
+//           C 只有 8 顆時 sprite ROM 正好 64MB，折回由遮罩自然發生，不需要複本
+//
+// 用法：kof99ae.zip 和這個 .dat 放同一個資料夾（或 .dat 放 system/fbneo/romdata/），
+//      直接載入 kof99ae.zip 即可。
+
+ZipName    kof99ae
+DrvName    kof99ae
+FullName   "The King of Fighters '99 - Millennium Battle (Anniversary 8C, Hack)"
+
+// 檔名            大小       CRC32       類型
+152-p1ae.p1        0x100000   0x71e06986  1 BRF_ESS BRF_PRG
+152-p2ae.sp2       0x400000   0x88720dea  1 BRF_ESS BRF_PRG
+
+251-s1ae.s1        0x020000   0x3c31ee43  2 BRF_GRA
+
+251-c1ae.c1        0x800000   0x7eabea6c  3 BRF_GRA
+251-c2ae.c2        0x800000   0xe5a5bc5c  3 BRF_GRA
+251-c3d.c3         0x800000   0xb047c9d5  3 BRF_GRA
+251-c4d.c4         0x800000   0x6bc8e4b1  3 BRF_GRA
+251-c5d.c5         0x800000   0x9746268c  3 BRF_GRA
+251-c6d.c6         0x800000   0x238b3e71  3 BRF_GRA
+251-c7ae.c7        0x800000   0xf568b040  3 BRF_GRA
+251-c8ae.c8        0x800000   0xc27a8180  3 BRF_GRA
+
+251-m1ae.m1        0x020000   0xf847e188  4 BRF_ESS BRF_PRG
+
+251-v1ae.v1        0x400000   0xceaa3bae  5 BRF_SND
+251-v2ae.v2        0x400000   0x07d70650  5 BRF_SND
+251-v3.v3          0x400000   0x821901da  5 BRF_SND
+251-v4.v4          0x200000   0xb49e6178  5 BRF_SND

@@ -1,4 +1,4 @@
-# KOF GOTVG 離線包 v5.4
+# KOF GOTVG 離線包 v5.5
 
 27 套游聚(GOTVG)KOF 改版,**全部經 FBNeo 實測可執行**。
 
@@ -231,8 +231,8 @@ builder 依 manifest 的 `split` 直接從池裡切出,同樣不佔分發量。
 | kof97orh | KOF97 天國神族 | `kof97ubp` | C 為 6×8MB(標準 kof97 為 4×8M+2×4M) |
 | kof2000t / kof2000s | KOF2000 优化版 / 練習版 | `kof2000t` | 現成槽位可用,但 kof2000s 的 p1 需先解密(見下) |
 | kof2003t | KOF2003 优化版 | `kof2003tg` | PROGBK3S 佈局(1M+4M+2M);V 拆成 4×4MB |
-| kof2002prsp / kf2k2pp / kof2002kai / kof2002p33 | KOF2002 UR / PP / 改 / CopyMix | `kof2k2g` | 四套共用。與現成的 `kof2k2fd` 只差在 V:PROGBK1 放不下 8MB,拆成 4×4MB |
-| kof99ae | KOF99 AE 版 | `kof99aeg` | 砍到 8 顆 C(64MB);官方 `kof99ae` 是 12 顆 96MB,做不成實體卡 |
+| kof2002prsp / kf2k2pp / kof2002kai / kof2002p33 | KOF2002 UR / PP / 改 / CopyMix | `kof2k2g` | 四套共用。與現成的 `kof2k2fd` 只差在 V:PROGBK1 放不下 8MB,拆成 4×4MB。**prsp / kai / p33 在 FBNeo 可改用 RomData,不必編譯**(見下);kf2k2pp 尚無 RomData |
+| kof99ae | KOF99 AE 版 | `kof99aeg` | 砍到 8 顆 C(64MB);官方 `kof99ae` 是 12 顆 96MB,做不成實體卡。**FBNeo 可改用 RomData,不必編譯**(見下) |
 
 ### 以 FBNeo RomData 載入(沿用現成驅動,ROM 清單較多)
 
@@ -245,6 +245,8 @@ Game > Open RomData manager(Ctrl+R)載入。不需要編譯 FBNeo。
 |---|---|---|---|
 | kof97s | KOF97 練習版 | `kof97` | c7 / c8(各 4MB),見 v5.4 |
 | kof971v1 | KOF97 1v1 專區版 | `kof97` | c7 / c8(各 4MB,與 kof97s 同一組),見 v5.4 |
+| kof2002prsp / kof2002kai / kof2002p33 | KOF2002 UR / 改 / CopyMix | `kof2k2fd` | V 宣告為 4×4MB(槽位原為 2×8MB),見 v5.5 |
+| kof99ae | KOF99 AE 版(8C) | `kof99ae` | C 宣告為 8 顆、不含 p3(槽位原為 12 顆 + p3),見 v5.5 |
 
 > **`kof2003tg` 這個名字不是筆誤。** FBNeo 本身已有一個叫 `kof2003t` 的
 > set(p1 為單顆 8MB 的 `271-p1t.p1`),與本包的 kof2003t 同名不同物,
@@ -607,6 +609,27 @@ sprite 空間**,不受單顆 ROM 邊界限制。只要 c1/c2 的內容改了,加
 
 **所以對 CMC42 / CMC50 加密的套件,必須先解密才能判斷有沒有獨有內容。**
 若照加密態的 CRC 收錄,kof2002kai 會多佔 `parts/` 64MB —— 實際只需 5MB。
+
+---
+
+## v5.5:KOF2002 三套與 kof99ae 加上 RomData
+
+新增 4 份 FBNeo RomData:`kof2002prsp`、`kof2002kai`、`kof2002p33`(借用
+`kof2k2fd`)與 `kof99ae`(借用 `kof99ae`)。在 FBNeo 裡**不必再編譯**
+`kof2k2g` / `kof99aeg`;`drivers/` 的 C 定義仍保留,給要編進 FBNeo 的人用。
+kf2k2pp 還沒有 RomData,仍需 `kof2k2g`。
+
+- 4 份的 ROM 清單與 `manifest.json` **逐檔一致**(檔名、CRC 全同,各 16 檔)。
+- 借用的 `kof2k2fd` 與 `kof99ae` 驅動都是 `NeoInit`、旗標只有
+  `CARTRIDGE | SNK_NEOGEO`,無 callback、無加密 —— 原封燒錄的行為與 FBNeo
+  一致。`kof99ae` 槽位原本的 p3 與 c9~c12 不在清單內:c9~c12 在 12C 驅動裡
+  是 c1~c4 的複本,用來模擬 8C 卡帶超過 64MB 的位址折回;C 剛好 64MB 時折回由
+  遮罩自然發生。
+- kof99ae 的 RomData 原名 `kof99ae8c.dat`、`ZipName` 為 `kof99ae8c`,已改為
+  `kof99ae`,與 `out/kof99ae.zip` 一致。
+
+builder:RomData 的 `ZipName` 與產出檔名不符時發出警告(FBNeo 會找不到);
+「需自建驅動」只列出沒有 RomData 的套件。
 
 ---
 

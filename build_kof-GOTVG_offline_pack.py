@@ -14,7 +14,7 @@ v5 ─ 全零填充區(kof98c2025 的 sp2b / p3)改由 builder 生成,不再佔 
 v4 ─ 依世代分組;manifest 每套帶 gen 與 needs。
 v3 ─ 池只從 originals/ 建,並排除與套件同名的 zip(修自我去重缺陷)。
 """
-import zipfile, os, sys, json, binascii, bz2
+import zipfile, os, sys, json, binascii, bz2, re
 from collections import defaultdict
 
 H = os.path.dirname(os.path.abspath(__file__))
@@ -170,6 +170,15 @@ if not CHECK_ONLY:
 _rd = os.path.join(H, "dats", "romdata")
 ROMDATA = ({f[:-4] for f in os.listdir(_rd) if f.endswith(".dat")}
            if os.path.isdir(_rd) else set())
+# RomData 的 ZipName 就是 FBNeo 要找的 zip 名 —— 必須等於 out/ 產出的檔名
+for _n in sorted(ROMDATA & set(SETS)):
+    for _l in open(os.path.join(_rd, _n + ".dat"), encoding="utf-8-sig"):
+        _m = re.match(r"\s*ZipName\s*:?\s*(\S+)", _l)
+        if _m:
+            if _m.group(1) != _n:
+                print(f"警告  : dats/romdata/{_n}.dat 的 ZipName 是 {_m.group(1)},"
+                      f"與產出的 {_n}.zip 不符,FBNeo 會找不到")
+            break
 
 bygen = defaultdict(list)
 for name, e in SETS.items():
@@ -267,5 +276,8 @@ _cust = sorted({e["host"] for e in SETS.values()
                 if os.path.isfile(os.path.join(H, "drivers", e["host"] + ".c"))})
 if _cust:
     for _h in _cust:
-        _who = sorted(n for n, e in SETS.items() if e["host"] == _h)
-        print(f"{', '.join(_who)} 需自建驅動 {_h} —— 見 drivers/{_h}.c")
+        # 有 RomData 的在 FBNeo 裡不必編譯驅動;drivers/ 仍留著給需要的人
+        _who = sorted(n for n, e in SETS.items()
+                      if e["host"] == _h and n not in ROMDATA)
+        if _who:
+            print(f"{', '.join(_who)} 需自建驅動 {_h} —— 見 drivers/{_h}.c")
